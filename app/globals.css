@@ -1,0 +1,397 @@
+@import "tailwindcss";
+
+/* PRD §5.1. Components only use the semantic tokens; tone sets resolve them per surface. */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --font-display: var(--font-clash), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --breakpoint-sm: 40rem;
+  --breakpoint-lg: 64rem;
+}
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f5f2;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --gutter: clamp(16px, 4vw, 64px);
+  --header-h: 72px;
+}
+
+/* Dark surface: Night base, Day inverse. */
+:root[data-theme="night"],
+:root[data-theme="night"] [data-tone="base"],
+:root[data-theme="day"] [data-tone="inverse"],
+:root:not([data-theme]) {
+  --surface: var(--black);
+  --fg: var(--white);
+  --fg-muted: #a3a3a3;
+  --accent: #cd7f32;
+  --line: rgb(245 245 242 / 0.12);
+  --on-accent: var(--black);
+  color-scheme: dark;
+}
+
+/* Light surface: Day base, Night inverse. bronze-400 never sits on white (2.9:1). */
+:root[data-theme="day"],
+:root[data-theme="day"] [data-tone="base"],
+:root[data-theme="night"] [data-tone="inverse"] {
+  --surface: var(--white);
+  --fg: var(--black);
+  --fg-muted: #5c5c5c;
+  --accent: #9a6230;
+  --line: rgb(10 10 10 / 0.12);
+  --on-accent: var(--white);
+  color-scheme: light;
+}
+
+html {
+  background: var(--surface);
+  color: var(--fg);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+/* Lenis.scrollTo already subtracts scroll-padding; only native scrolling needs it. */
+html:not(.lenis) {
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Theme switch ≤ 600 ms (PRD §5.2); only during the toggle, never on load. */
+html.theme-transition,
+html.theme-transition * {
+  transition:
+    background-color 0.6s var(--ease-out),
+    color 0.6s var(--ease-out),
+    border-color 0.6s var(--ease-out) !important;
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .accent-word {
+    font-family: var(--font-serif);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--accent);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    border-radius: 999px;
+    padding: 0.7em 1.25em;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out);
+  }
+  .pill-accent {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .pill-accent:hover {
+    background: var(--fg);
+    color: var(--surface);
+  }
+  .pill-ghost {
+    border: 1px solid color-mix(in srgb, var(--fg) 30%, transparent);
+  }
+  .pill-ghost:hover {
+    border-color: var(--fg);
+  }
+
+  .chip {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.55em 1em;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .link-underline {
+    background: linear-gradient(var(--accent), var(--accent)) left bottom / 0 1px no-repeat;
+    transition: background-size 0.4s var(--ease-out);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .media {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+/* A6 grain: one static tile, no blend mode (a full-screen blend recomposites every frame). */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: url("/grain.png") repeat;
+  background-size: 72px;
+  opacity: 0.05;
+}
+:root[data-theme="day"] .grain {
+  opacity: 0.04;
+}
+
+/* A5 hairline grid (R4): 4 columns of lines inside each section, coloured by its tone. */
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.grid-lines > div {
+  height: 100%;
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+  background-size: 25% 100%;
+  border-right: 1px solid var(--line);
+}
+
+/* M-09 panel plate: transform only; still tier keeps a full plate without radius. */
+.panel-bg {
+  position: absolute;
+  inset: 0;
+  /* Top corners only: the plate ends flush with the next section. */
+  border-radius: 24px 24px 0 0;
+  background: var(--surface);
+  transform-origin: 50% 0;
+}
+:root[data-motion="still"] .panel-bg {
+  border-radius: 0;
+}
+
+/* M-01/M-02 initial state, set before paint by the tier attribute. A CSS fallback reveals the
+   text if JavaScript never runs, so the hero is never blank. */
+:root:is([data-motion="full"], [data-motion="lite"]) [data-hero-reveal] {
+  opacity: 0;
+  animation: reveal-fallback 0.4s 2.5s forwards;
+}
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hero column glints: three loops at most (Motion & Artwork §3), paused off-screen. */
+.glint {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.glint[data-loop] {
+  animation: glint var(--glint-d, 8s) ease-in-out infinite alternate;
+}
+@keyframes glint {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--glint-x, 200px));
+  }
+}
+
+/* A3 glyph idle loops (M-25): only transform/opacity, only while visible. */
+/* Only the CSS-animated parts: elsewhere it would move the origin of `rotate()` attributes. */
+.glyph .g-bar,
+.glyph .g-spin {
+  transform-box: fill-box;
+}
+.glyph[data-live] .g-bar {
+  animation: g-bar 2.4s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+.glyph[data-live] .g-scan {
+  animation: g-scan 3s linear infinite;
+}
+.glyph[data-live] .g-dot {
+  animation: g-dot 1.2s steps(1) infinite;
+}
+.glyph[data-live] .g-spin {
+  animation: g-spin 12s linear infinite;
+  transform-origin: 50% 50%;
+}
+.glyph[data-live] .g-cell {
+  animation: g-cell 6.4s steps(1) infinite;
+}
+@keyframes g-bar {
+  from {
+    transform: scaleY(0.4);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes g-scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(52px);
+  }
+}
+@keyframes g-dot {
+  0%,
+  66% {
+    opacity: 0.25;
+  }
+  33% {
+    opacity: 1;
+  }
+}
+@keyframes g-spin {
+  to {
+    transform: rotate(72deg);
+  }
+}
+@keyframes g-cell {
+  0% {
+    transform: translate(0, 0);
+  }
+  12.5% {
+    transform: translate(24px, 0);
+  }
+  25% {
+    transform: translate(48px, 0);
+  }
+  37.5% {
+    transform: translate(48px, 24px);
+  }
+  50% {
+    transform: translate(24px, 24px);
+  }
+  62.5% {
+    transform: translate(0, 24px);
+  }
+  75% {
+    transform: translate(0, 48px);
+  }
+  87.5% {
+    transform: translate(24px, 48px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+:root[data-motion="still"] .glint,
+:root[data-motion="still"] .glyph * {
+  animation: none !important;
+}
+
+.hero[data-offscreen] .glint {
+  animation-play-state: paused;
+}
+
+/* PRD §6.2: zoom sections are tall tracks with a 100svh sticky frame. Track heights per tier are
+   set before first paint (data-motion), so nothing switches to position:fixed while scrolling
+   (GSAP pins did, and Chrome scored each switch as a full-screen layout shift). */
+.track {
+  position: relative;
+}
+.sticky-frame {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+:root[data-motion="full"] .track-hero {
+  height: 200svh;
+}
+:root[data-motion="lite"] .track-hero {
+  height: 160svh;
+}
+:root[data-motion="full"] .track-gallery {
+  height: 300svh;
+}
+:root[data-motion="lite"] .track-gallery {
+  height: 220svh;
+}
+:root[data-motion="full"] .track-sun {
+  height: 180svh;
+}
+:root:is([data-motion="full"], [data-motion="lite"]) .track-case {
+  height: 180svh;
+}
+@media (max-width: 639px) {
+  :root:is([data-motion="full"], [data-motion="lite"]) .track-case {
+    height: 140svh;
+  }
+}

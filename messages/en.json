@@ -1,0 +1,16 @@
+{
+  "nav": { "work": "Work", "about": "About", "contact": "Contact", "cv": "CV", "menu": "Menu", "close": "Close", "home": "Home", "primary": "Primary" },
+  "toggle": { "night": "Night", "day": "Day", "theme": "Color theme", "language": "Language" },
+  "hero": { "viewWork": "View work", "downloadCv": "Download CV", "scroll": "Scroll" },
+  "section": { "about": "About", "work": "Work", "skills": "Skills", "experience": "Experience", "contact": "Contact" },
+  "work": { "readCase": "Read case study", "other": "Other work", "live": "Live", "source": "Source", "featured": "Selected work" },
+  "case": { "role": "Role", "duration": "Duration", "team": "Team", "stack": "Stack", "links": "Links", "problem": "Problem", "process": "Process", "decisions": "Key decisions", "results": "Results", "gallery": "Gallery", "next": "Next project", "back": "Back to work" },
+  "activity": { "next": "Next activity", "back": "Back to experience", "link": "Link", "types": { "education": "Education", "organization": "Organization", "competition": "Competition", "certification": "Certification", "event": "Event" } },
+  "contact": { "title": "Let's build", "titleAccent": "something", "copy": "Copy", "copied": "Copied", "email": "Email", "notConfigured": "The contact form is not configured yet (missing keys). Use the channels on the right." },
+  "form": { "name": "Name", "email": "Email", "company": "Company (optional)", "message": "Message", "send": "Send", "sending": "Sending…", "success": "Message sent. I'll reply within 2 days.", "error": "Something went wrong. Email me directly instead.", "invalid": "Please check the highlighted fields.", "rateLimited": "Too many messages. Try again in a few minutes.", "errors": { "name": "Enter your name (2–80 characters).", "email": "Enter a valid email address.", "company": "Keep the company under 120 characters.", "message": "Write at least 10 characters (max 4000).", "captcha": "Complete the verification." } },
+  "footer": { "built": "Built with Next.js · GSAP · three.js", "source": "Source" },
+  "a11y": { "skip": "Skip to content", "external": "opens in a new tab" },
+  "notFound": { "title": "Lost the trail", "body": "This page does not exist, or it moved.", "back": "Back home" },
+  "error": { "title": "Something broke", "retry": "Try again" },
+  "meta": { "title": "Dimas Jati Satria — Software Engineer", "description": "Software engineer (full-stack + AI) from Universitas Gadjah Mada. Available for an internship from February 2027." }
+}

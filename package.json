@@ -1,0 +1,60 @@
+{
+  "name": "summit-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dimas Jati Satria — portfolio (Summit v3). Next.js 16, GSAP, three.js, Sanity, EN + ID.",
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "predev": "node scripts/fetch-fonts.mjs",
+    "dev": "next dev -p 3010",
+    "prebuild": "node scripts/fetch-fonts.mjs",
+    "build": "next build",
+    "start": "next start -p 3010",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "media": "node scripts/prepare-media.mjs",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@gsap/react": "2.1.2",
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.2",
+    "@vercel/analytics": "2.0.1",
+    "@vercel/speed-insights": "2.1.0",
+    "gsap": "3.15.1",
+    "lenis": "1.3.27",
+    "next": "16.4.6",
+    "next-intl": "4.15.1",
+    "next-sanity": "13.5.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "resend": "6.39.0",
+    "server-only": "0.0.1",
+    "three": "0.187.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.1",
+    "@tailwindcss/postcss": "4.3.5",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
+    "eslint": "10.15.0",
+    "eslint-config-next": "16.4.6",
+    "prettier": "3.10.1",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "sharp": "0.35.5",
+    "tailwindcss": "4.3.5",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}

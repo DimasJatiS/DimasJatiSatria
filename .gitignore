@@ -1,0 +1,62 @@
+# dependencies
+node_modules/
+
+# build output
+/.next/
+/out/
+/build
+/studio/dist
+/studio/.sanity
+*.tsbuildinfo
+next-env.d.ts
+
+# tests
+/coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+
+# env: only the template is tracked
+.env*
+!.env.example
+
+# deploy
+.vercel/
+
+# agent files and local tooling (never published)
+AGENTS.md
+CLAUDE.md
+.claude/
+.omc/
+.agents/
+graphify-out/
+.tooling/
+
+# owner-only media. Anchored so public/projects/ stays tracked.
+/projects/
+/activities/
+
+# licensed font: downloaded at build time, never committed
+app/fonts/ClashDisplay-Variable.woff2
+
+# planning docs, ignored by name until they move to docs/planning/ at project end
+docs/planning/
+docs/superpowers/
+docs/references/
+docs/evidence/
+docs/PRD — Portfolio 3D Summit.md
+docs/Spesifikasi Lanjutan v3 — Layout, Motion, Content Model.md
+docs/Motion & Artwork v3 — Parallax Ringan.md
+docs/Checklist Pengembangan v3 — Portfolio Summit.md
+docs/Teardown Referensi v3 — Scroll & Zoom.md
+
+# OS, editor, logs
+.DS_Store
+*.pem
+.idea/
+.vscode/
+npm-debug.log*
+.pnpm-debug.log*
+
+# local measurement output
+.lighthouse/

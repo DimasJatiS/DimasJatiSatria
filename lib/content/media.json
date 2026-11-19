@@ -1,0 +1,131 @@
+{
+  "tbxxpert": {
+    "cover": {
+      "src": "/projects/tbxxpert/cover.jpg",
+      "color": "/projects/tbxxpert/cover-color.jpg",
+      "width": 1600,
+      "height": 1000
+    },
+    "gallery": [
+      {
+        "src": "/projects/tbxxpert/gallery-1.jpg",
+        "width": 576,
+        "height": 1280
+      },
+      {
+        "src": "/projects/tbxxpert/gallery-2.jpg",
+        "width": 576,
+        "height": 1280
+      },
+      {
+        "src": "/projects/tbxxpert/gallery-3.jpg",
+        "width": 576,
+        "height": 1280
+      },
+      {
+        "src": "/projects/tbxxpert/gallery-4.jpg",
+        "width": 576,
+        "height": 1280
+      }
+    ]
+  },
+  "ai-cv-screen": {
+    "cover": {
+      "src": "/projects/ai-cv-screen/cover.jpg",
+      "color": "/projects/ai-cv-screen/cover-color.jpg",
+      "width": 1600,
+      "height": 914
+    },
+    "gallery": []
+  },
+  "inofa": {
+    "cover": {
+      "src": "/projects/inofa/cover.jpg",
+      "color": "/projects/inofa/cover-color.jpg",
+      "width": 1600,
+      "height": 1459
+    },
+    "gallery": [
+      {
+        "src": "/projects/inofa/gallery-1.jpg",
+        "width": 1600,
+        "height": 1447
+      },
+      {
+        "src": "/projects/inofa/gallery-2.jpg",
+        "width": 1398,
+        "height": 1600
+      },
+      {
+        "src": "/projects/inofa/gallery-3.jpg",
+        "width": 1600,
+        "height": 961
+      },
+      {
+        "src": "/projects/inofa/gallery-4.jpg",
+        "width": 1600,
+        "height": 961
+      },
+      {
+        "src": "/projects/inofa/gallery-5.jpg",
+        "width": 1600,
+        "height": 1484
+      },
+      {
+        "src": "/projects/inofa/gallery-6.jpg",
+        "width": 1600,
+        "height": 817
+      }
+    ]
+  },
+  "bloomarie-store": {
+    "cover": {
+      "src": "/projects/bloomarie-store/cover.jpg",
+      "color": "/projects/bloomarie-store/cover-color.jpg",
+      "width": 1600,
+      "height": 1127
+    },
+    "gallery": [
+      {
+        "src": "/projects/bloomarie-store/gallery-1.jpg",
+        "width": 1424,
+        "height": 885
+      },
+      {
+        "src": "/projects/bloomarie-store/gallery-2.jpg",
+        "width": 1481,
+        "height": 1411
+      },
+      {
+        "src": "/projects/bloomarie-store/gallery-3.jpg",
+        "width": 329,
+        "height": 740
+      }
+    ]
+  },
+  "siakad": {
+    "cover": {
+      "src": "/projects/siakad/cover.jpg",
+      "color": "/projects/siakad/cover-color.jpg",
+      "width": 1600,
+      "height": 887
+    },
+    "gallery": [
+      {
+        "src": "/projects/siakad/gallery-1.jpg",
+        "width": 1600,
+        "height": 853
+      },
+      {
+        "src": "/projects/siakad/gallery-2.jpg",
+        "width": 1600,
+        "height": 882
+      },
+      {
+        "src": "/projects/siakad/gallery-3.jpg",
+        "width": 1600,
+        "height": 886
+      }
+    ]
+  }
+}

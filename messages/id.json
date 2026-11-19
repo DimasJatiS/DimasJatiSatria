@@ -1,0 +1,16 @@
+{
+  "nav": { "work": "Karya", "about": "Tentang", "contact": "Kontak", "cv": "CV", "menu": "Menu", "close": "Tutup", "home": "Beranda", "primary": "Utama" },
+  "toggle": { "night": "Malam", "day": "Siang", "theme": "Tema warna", "language": "Bahasa" },
+  "hero": { "viewWork": "Lihat karya", "downloadCv": "Unduh CV", "scroll": "Gulir" },
+  "section": { "about": "Tentang", "work": "Karya", "skills": "Keahlian", "experience": "Pengalaman", "contact": "Kontak" },
+  "work": { "readCase": "Baca studi kasus", "other": "Karya lain", "live": "Live", "source": "Kode", "featured": "Karya pilihan" },
+  "case": { "role": "Peran", "duration": "Durasi", "team": "Tim", "stack": "Stack", "links": "Tautan", "problem": "Masalah", "process": "Proses", "decisions": "Keputusan kunci", "results": "Hasil", "gallery": "Galeri", "next": "Proyek berikutnya", "back": "Kembali ke karya" },
+  "activity": { "next": "Aktivitas berikutnya", "back": "Kembali ke pengalaman", "link": "Tautan", "types": { "education": "Pendidikan", "organization": "Organisasi", "competition": "Kompetisi", "certification": "Sertifikasi", "event": "Acara" } },
+  "contact": { "title": "Mari bangun", "titleAccent": "sesuatu", "copy": "Salin", "copied": "Tersalin", "email": "Email", "notConfigured": "Form kontak belum dikonfigurasi (kunci belum ada). Gunakan kanal di sebelah kanan." },
+  "form": { "name": "Nama", "email": "Email", "company": "Perusahaan (opsional)", "message": "Pesan", "send": "Kirim", "sending": "Mengirim…", "success": "Pesan terkirim. Saya balas dalam 2 hari.", "error": "Ada yang salah. Silakan email saya langsung.", "invalid": "Periksa kembali kolom yang ditandai.", "rateLimited": "Terlalu banyak pesan. Coba lagi beberapa menit lagi.", "errors": { "name": "Isi nama Anda (2–80 karakter).", "email": "Isi alamat email yang valid.", "company": "Nama perusahaan maksimal 120 karakter.", "message": "Tulis minimal 10 karakter (maks. 4000).", "captcha": "Selesaikan verifikasi." } },
+  "footer": { "built": "Dibuat dengan Next.js · GSAP · three.js", "source": "Kode" },
+  "a11y": { "skip": "Lewati ke konten", "external": "membuka tab baru" },
+  "notFound": { "title": "Jejaknya hilang", "body": "Halaman ini tidak ada, atau sudah pindah.", "back": "Kembali ke beranda" },
+  "error": { "title": "Ada yang rusak", "retry": "Coba lagi" },
+  "meta": { "title": "Dimas Jati Satria — Software Engineer", "description": "Software engineer (full-stack + AI) dari Universitas Gadjah Mada. Siap magang mulai Februari 2027." }
+}
