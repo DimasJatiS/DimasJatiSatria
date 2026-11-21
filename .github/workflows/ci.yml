@@ -27,8 +27,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Clash Display is licensed, never committed: fetched before anything needs it.
-      - run: node scripts/fetch-fonts.mjs
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

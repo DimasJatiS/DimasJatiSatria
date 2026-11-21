@@ -3,7 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
-import { clash, geist, geistMono, instrument } from "@/app/fonts";
+import { corben, manrope } from "@/app/fonts";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MotionRoot } from "@/components/layout/MotionRoot";
@@ -44,7 +44,7 @@ export default async function LocaleLayout({ children }: { children: React.React
   const { settings } = await getContent(locale);
 
   return (
-    <html lang={locale} data-theme="night" suppressHydrationWarning className={`${clash.variable} ${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
+    <html lang={locale} data-theme="night" suppressHydrationWarning className={`${manrope.variable} ${corben.variable}`}>
       <head>
         {/* Theme + motion tier before first paint (no flash, PRD §5.2, Motion & Artwork §2). */}
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
@@ -56,7 +56,7 @@ export default async function LocaleLayout({ children }: { children: React.React
           <main id="main" tabIndex={-1} className="outline-none">
             {children}
           </main>
-          <Footer repoUrl={settings.repoUrl} />
+          <Footer />
           <MotionRoot />
           <Tracking />
         </NextIntlClientProvider>

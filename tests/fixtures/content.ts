@@ -9,7 +9,7 @@ export const fixtures: RawContent = {
   ...seed,
   settings: { ...seed.settings, email: "hello@example.com", linkedin: "https://www.linkedin.com/in/example", github: "https://github.com/example", repoUrl: "https://github.com/example/portfolio" },
   projects: seed.projects.map((p) =>
-    p.slug === "tbxxpert"
+    p.slug === "tbxpert"
       ? {
           ...p,
           role: "Example role",

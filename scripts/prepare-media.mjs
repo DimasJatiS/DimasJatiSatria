@@ -6,6 +6,7 @@
 // - components/artwork/contour-paths.json: A1 topographic contours (noise field + marching squares)
 // Raw owner media lives in projects/ (not committed).
 import { mkdir, readdir, writeFile, rm } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const root = new URL("../", import.meta.url);
@@ -15,8 +16,31 @@ const SOURCES = {
   inofa: { dir: "inofa", cover: "cover.png", gallery: /^inofa-\d+\.jpe?g$/, max: 6 },
   "bloomarie-store": { dir: "bloomarie-store", cover: "cover.png", gallery: /^bloomarie-\d+\.jpe?g$/ },
   siakad: { dir: "siakad", cover: "siakad-1.png", gallery: /^siakad-[2-9]\.png$/ },
+  // Gallery = phone screenshots of a landscape video: `band` crops each to the lit band in the middle.
+  shardfall: { dir: "shardfall-game", cover: "WhatsApp Image 2026-11-19 at 12.36.06 PM.jpeg", gallery: /^WhatsApp Image .* at 12\.38\..*\.jpeg$/, band: true },
 };
 const num = (f) => Number(f.match(/(\d+)\./)?.[1] ?? 0);
+const byNumberThenName = (a, b) => num(a) - num(b) || a.localeCompare(b);
+
+/** Rows of a phone screenshot that hold the actual (landscape) picture: the tallest run of non-black rows, ignoring the status/control bars. */
+async function contentBand(file) {
+  const { data, info } = await sharp(file).greyscale().raw().toBuffer({ resolveWithObject: true });
+  const lit = (y) => {
+    let sum = 0;
+    for (let x = 0; x < info.width; x++) sum += data[y * info.width + x];
+    return sum / info.width > 12;
+  };
+  let best = { top: 0, height: info.height };
+  let start = -1;
+  for (let y = Math.round(info.height * 0.12); y <= Math.round(info.height * 0.88); y++) {
+    if (lit(y) && start < 0) start = y;
+    if ((!lit(y) || y === Math.round(info.height * 0.88)) && start >= 0) {
+      if (y - start > (best.height === info.height ? 0 : best.height)) best = { top: start, height: y - start };
+      start = -1;
+    }
+  }
+  return { left: 0, top: best.top, width: info.width, height: best.height };
+}
 
 const media = {};
 for (const [slug, src] of Object.entries(SOURCES)) {
@@ -24,21 +48,42 @@ for (const [slug, src] of Object.entries(SOURCES)) {
   const outDir = new URL(`public/projects/${slug}/`, root);
   await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
-  const cover = sharp(new URL(src.cover, inDir).pathname).resize({ width: 1600, withoutEnlargement: true });
+  const cover = sharp(fileURLToPath(new URL(src.cover, inDir))).resize({ width: 1600, withoutEnlargement: true });
   // Gallery tiles are scaled up to 9×, so grayscale is baked into the file (no CSS filter).
-  const grayInfo = await cover.clone().grayscale().jpeg({ quality: 72, mozjpeg: true }).toFile(new URL("cover.jpg", outDir).pathname);
-  await cover.clone().jpeg({ quality: 76, mozjpeg: true }).toFile(new URL("cover-color.jpg", outDir).pathname);
+  const grayInfo = await cover.clone().grayscale().jpeg({ quality: 72, mozjpeg: true }).toFile(fileURLToPath(new URL("cover.jpg", outDir)));
+  await cover.clone().jpeg({ quality: 76, mozjpeg: true }).toFile(fileURLToPath(new URL("cover-color.jpg", outDir)));
   const entry = { cover: { src: `/projects/${slug}/cover.jpg`, color: `/projects/${slug}/cover-color.jpg`, width: grayInfo.width, height: grayInfo.height }, gallery: [] };
   if (src.gallery) {
-    const files = (await readdir(inDir)).filter((f) => src.gallery.test(f)).sort((a, b) => num(a) - num(b)).slice(0, src.max ?? 8);
+    const files = (await readdir(inDir)).filter((f) => src.gallery.test(f)).sort(byNumberThenName).slice(0, src.max ?? 8);
     for (const [i, f] of files.entries()) {
-      const info = await sharp(new URL(f, inDir).pathname).resize({ width: 1600, withoutEnlargement: true }).jpeg({ quality: 76, mozjpeg: true }).toFile(new URL(`gallery-${i + 1}.jpg`, outDir).pathname);
+      const file = fileURLToPath(new URL(f, inDir));
+      const img = src.band ? sharp(file).extract(await contentBand(file)) : sharp(file);
+      const info = await img.resize({ width: 1600, withoutEnlargement: true }).jpeg({ quality: 76, mozjpeg: true }).toFile(fileURLToPath(new URL(`gallery-${i + 1}.jpg`, outDir)));
       entry.gallery.push({ src: `/projects/${slug}/gallery-${i + 1}.jpg`, width: info.width, height: info.height });
     }
   }
   media[slug] = entry;
 }
 await writeFile(new URL("lib/content/media.json", root), JSON.stringify(media, null, 2) + "\n");
+
+// Activity photos (activities/<slug>/, owner media) → public/activities/<slug>/photo-N(-gray).jpg.
+const ACTIVITIES = { "pimnas-39": "pimnas" };
+const activityMedia = {};
+for (const [slug, dir] of Object.entries(ACTIVITIES)) {
+  const inDir = new URL(`activities/${dir}/`, root);
+  const outDir = new URL(`public/activities/${slug}/`, root);
+  await rm(outDir, { recursive: true, force: true });
+  await mkdir(outDir, { recursive: true });
+  const files = (await readdir(inDir)).filter((f) => /\.(jpe?g|png)$/i.test(f)).sort();
+  activityMedia[slug] = [];
+  for (const [i, f] of files.entries()) {
+    const img = sharp(fileURLToPath(new URL(f, inDir))).rotate().resize({ width: 1600, withoutEnlargement: true });
+    const info = await img.clone().jpeg({ quality: 78, mozjpeg: true }).toFile(fileURLToPath(new URL(`photo-${i + 1}.jpg`, outDir)));
+    await img.clone().grayscale().jpeg({ quality: 74, mozjpeg: true }).toFile(fileURLToPath(new URL(`photo-${i + 1}-gray.jpg`, outDir)));
+    activityMedia[slug].push({ src: `/activities/${slug}/photo-${i + 1}.jpg`, gray: `/activities/${slug}/photo-${i + 1}-gray.jpg`, width: info.width, height: info.height });
+  }
+}
+await writeFile(new URL("lib/content/activity-media.json", root), JSON.stringify(activityMedia, null, 2) + "\n");
 
 // Deterministic PRNG so every run produces the same assets.
 let seed = 7;
@@ -48,7 +93,7 @@ const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 const G = 72;
 const noise = Buffer.alloc(G * G);
 for (let i = 0; i < noise.length; i++) noise[i] = Math.round(rand() * 255);
-await sharp(noise, { raw: { width: G, height: G, channels: 1 } }).png({ compressionLevel: 9, palette: false }).toFile(new URL("public/grain.png", root).pathname);
+await sharp(noise, { raw: { width: G, height: G, channels: 1 } }).png({ compressionLevel: 9, palette: false }).toFile(fileURLToPath(new URL("public/grain.png", root)));
 
 // Hero fallback: blobs + bronze core at the valley floor, same palette as the shader (Spek §4).
 const fallback = (bg, blob, blobA, core) => `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000">
@@ -63,7 +108,7 @@ for (const [name, svg] of [
   ["dark", fallback("#0A0A0A", "#A3A3A3", 0.35, "#CD7F32")],
   ["light", fallback("#F5F5F2", "#5C5C5C", 0.25, "#9A6230")],
 ]) {
-  await sharp(Buffer.from(svg)).avif({ quality: 40 }).toFile(new URL(`public/hero-fallback-${name}.avif`, root).pathname);
+  await sharp(Buffer.from(svg)).avif({ quality: 40 }).toFile(fileURLToPath(new URL(`public/hero-fallback-${name}.avif`, root)));
 }
 
 // A1 contours: a smooth height field with one peak in the upper-right third, traced with marching squares.

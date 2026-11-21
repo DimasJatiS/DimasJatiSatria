@@ -41,11 +41,10 @@ const LOOPING = new Set([0, 3, 5]);
 type Props = {
   label: string;
   statement: string;
-  availability?: string;
   cvUrl?: string;
 };
 
-export function Hero({ label, statement, availability, cvUrl }: Props) {
+export function Hero({ label, statement, cvUrl }: Props) {
   const t = useTranslations("hero");
   const ref = useRef<HTMLElement>(null);
   const [shader, setShader] = useState<"off" | "on" | "failed">("off");
@@ -215,7 +214,7 @@ export function Hero({ label, statement, availability, cvUrl }: Props) {
             id="hero-name"
             data-hero-reveal
             data-hero-name
-            className="display mt-5 text-[clamp(44px,8.6vw,140px)] font-light tracking-[-0.01em] text-balance"
+            className="display mt-5 text-[clamp(44px,8.6vw,140px)] tracking-[-0.01em] text-balance"
           >
             <span className="block sm:inline">Dimas</span>{" "}
             <span className="block sm:inline">Jati Satria</span>
@@ -245,16 +244,8 @@ export function Hero({ label, statement, availability, cvUrl }: Props) {
 
         <div
           data-hero-text
-          className="label container-x absolute inset-x-0 bottom-6 flex items-center justify-between text-muted"
+          className="label container-x absolute inset-x-0 bottom-6 flex items-center justify-end text-muted"
         >
-          {availability ? (
-            <p className="flex items-center gap-2">
-              <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-              {availability}
-            </p>
-          ) : (
-            <span />
-          )}
           <span aria-hidden className="hidden sm:inline">
             {t("scroll")} ↓
           </span>

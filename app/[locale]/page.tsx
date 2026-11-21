@@ -37,10 +37,7 @@ export default async function Home() {
     gray: tile.kind === "cover" ? tile.project.cover?.gray : undefined,
   }));
 
-  // Sections without data are hidden (no placeholders in public); numbering follows what is shown.
-  const shown = ["about", "work", skills.length > 0 && "skills", timeline.length > 0 && "experience", "contact"].filter(Boolean) as string[];
-  const total = shown.length + 1;
-  const n = (id: string) => shown.indexOf(id) + 2;
+  // Sections without data are hidden (no placeholders in public).
   const form = contactConfigured
     ? ({ mode: "live", siteKey: env.NEXT_PUBLIC_TURNSTILE_SITE_KEY! } as const)
     : ({ mode: process.env.NODE_ENV === "production" ? "hidden" : "note" } as const);
@@ -48,16 +45,16 @@ export default async function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(personJsonLd(settings, meta("description"))) }} />
-      <Hero label={settings.heroLabel} statement={settings.heroStatement} availability={settings.availability} cvUrl={settings.cvUrl} />
-      <About index={n("about")} total={total} label={t("about")} manifesto={settings.manifesto} facts={settings.facts} />
-      <Section id="work" tone="base" panel index={n("work")} total={total} label={t("work")}>
+      <Hero label={settings.heroLabel} statement={settings.heroStatement} cvUrl={settings.cvUrl} />
+      <About label={t("about")} manifesto={settings.manifesto} />
+      <Section id="work" tone="base" panel label={t("work")}>
         <WorkGallery tiles={tiles} />
         <FeaturedCards projects={featured} />
         <OtherWork projects={others} />
       </Section>
-      {skills.length > 0 && <Skills index={n("skills")} total={total} label={t("skills")} groups={skills} />}
-      {timeline.length > 0 && <Experience index={n("experience")} total={total} label={t("experience")} items={timeline} />}
-      <Contact index={n("contact")} total={total} label={t("contact")} panel={timeline.length === 0 && skills.length > 0} settings={settings} form={form} />
+      {skills.length > 0 && <Skills label={t("skills")} groups={skills} />}
+      {timeline.length > 0 && <Experience label={t("experience")} items={timeline} />}
+      <Contact label={t("contact")} panel={timeline.length === 0 && skills.length > 0} settings={settings} form={form} />
     </>
   );
 }

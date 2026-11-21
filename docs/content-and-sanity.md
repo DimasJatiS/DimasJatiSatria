@@ -10,7 +10,7 @@ Field dua bahasa berbentuk `{ en, id }`; ID kosong → tampil EN.
 
 | Tipe | Field penting |
 | --- | --- |
-| `siteSettings` (singleton) | `heroLabel`, `heroStatement`, `manifesto`, `facts` (maks. 5), `availability`, `showAvailability`, `email`, `linkedin`, `github`, `repoUrl`, `cv` (PDF ≤ 500 KB) |
+| `siteSettings` (singleton) | `heroLabel`, `heroStatement`, `manifesto`, `email`, `linkedin`, `github`, `repoUrl`, `cv` (PDF ≤ 500 KB) |
 | `project` | `title`, `slug`, `featured`, `order`, `summary`, `role`, `year`, `duration`, `team`, `stack`, `glyph`, `cover` (+alt), `galleryTile`, `liveUrl`, `repoUrl`, `problem`, `process`, `decisions[]` (judul, isi, kode), `results`, `gallery[]` |
 | `activity` | `title`, `slug`, `org`, `type`, `startDate`, `endDate`, `summary`, `body`, `cover`, `gallery[]`, `url`, `featured`, `order` |
 | `skillGroup` | `title`, `items[]`, `order` |
@@ -36,3 +36,28 @@ Buat `activity`. Home menampilkan maksimal 6 yang `featured`, urut `order`. Bila
 ## Revalidasi
 
 Webhook Sanity (POST ke `/api/revalidate`, secret = `SANITY_REVALIDATE_SECRET`, projection apa pun) menandai tag `sanity` kedaluwarsa; perubahan tampil di permintaan berikutnya. Tanpa webhook, cache kedaluwarsa sendiri setiap 1 jam.
+
+## Mengganti gambar proyek dan Selected work (3 teratas)
+
+**Urutan.** Proyek tampil dari `year` terbaru; `order` hanya mengurutkan proyek dengan tahun yang sama (1 = paling depan). Aktivitas tampil dari `startDate` terbaru. Urutan ini dipakai di Home, `/work`, `/activities`, dan urutan Related (semua proyek → semua aktivitas → Contact).
+
+**Selected work = proyek dengan `featured` aktif.** Proyek featured tampil sebagai kartu besar di Home dan sampulnya mengisi galeri zoom (pusat + dua slot). Idealnya tepat 3 proyek featured, masing-masing punya cover.
+
+### Cara 1 — Sanity Studio (langsung ke situs live, tanpa deploy)
+
+1. Buka https://dimasjati.sanity.studio dan login dengan akun Sanity-mu (atau lokal: `cd studio && pnpm dev` → `http://localhost:3333`).
+2. **Project** → pilih proyek → tab **Card**:
+   - **Cover**: unggah gambar landscape ≥ 1440 px, isi **Alt text** (EN + ID). Foto portrait juga boleh: halaman akan memasangkannya dengan foto portrait pertama di Gallery, berdampingan.
+   - **Featured**: aktifkan untuk 3 proyek pilihan, matikan yang lain.
+3. Tab **Case study** → **Gallery**: tambah, hapus, atau urutkan screenshot.
+4. **Publish**. Webhook memperbarui situs dalam beberapa detik.
+
+Catatan: `scripts/import-seed.ts` menimpa dokumen proyek dengan isi seed. Setelah mengedit di Studio, jangan jalankan import lagi kecuali seed juga sudah disamakan.
+
+### Cara 2 — File di repo (seed), lalu import
+
+1. Taruh gambar mentah di `projects/<folder>/` (folder ini tidak di-commit).
+2. Petakan di `scripts/prepare-media.mjs` → `SOURCES`: nama file `cover` dan pola `gallery`. Untuk screenshot HP dari video landscape, tambahkan `band: true` agar dipotong otomatis ke area gambar.
+3. `pnpm media` → membuat `public/projects/<slug>/` (cover abu-abu + berwarna, gallery) dan `lib/content/media.json`.
+4. Di `lib/content/seed.ts`, pakai `cover("<slug>", "<Judul>")` dan `gallery(...)`; untuk Selected work ubah `featured: true/false`.
+5. Kirim ke Sanity: `cd studio && pnpm exec sanity exec scripts/import-seed.ts --with-user-token`. Kalau ada perubahan kode juga, deploy ulang.

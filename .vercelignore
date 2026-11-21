@@ -1,0 +1,22 @@
+# Never upload local secrets, owner raw media, planning docs or agent files.
+.env*
+!.env.example
+/projects/
+/activities/
+docs/*.md
+!docs/README.md
+!docs/architecture.md
+!docs/motion.md
+!docs/content-and-sanity.md
+!docs/deployment-and-launch.md
+docs/references/
+docs/superpowers/
+docs/.omc/
+.omc/
+.claude/
+AGENTS.md
+CLAUDE.md
+node_modules/
+.next/
+test-results/
+playwright-report/

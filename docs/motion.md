@@ -29,7 +29,7 @@ Tiga momen besar dan hero case study memakai **track CSS** (`.track` + `.sticky-
 | M-14 | `WorkProjects.tsx` | Kartu sticky bertumpuk, `scale 0.95→1`, `y 60→0`; 3 layer GPU |
 | M-15 | `WorkProjects.tsx` | Gambar 320px mengikuti kursor (`quickTo`), hanya pointer halus |
 | M-16 | `Skills.tsx` | 40px/s × (1 + |v|/1000), arah ikut scroll, lebar diukur saat refresh |
-| M-18/19 | `ui/TextPressure.tsx`, `ui/Magnet.tsx` | Bobot Clash Display mengikuti kursor; tombol Send magnet 0,3/80px |
+| M-19 | `ui/Magnet.tsx` | Tombol Send magnet 0,3/80px (M-18 TextPressure dihapus: Corben tidak punya sumbu bobot) |
 | M-20 | `MotionRoot.tsx` | ScrambleText ≤ 400ms untuk label section |
 | M-21 | `Header.tsx` | Pill mengambang setelah 80px, murni CSS (clip-path + translate) |
 | M-22 | `CaseHero.tsx` | Media `scale 0.6→1` |

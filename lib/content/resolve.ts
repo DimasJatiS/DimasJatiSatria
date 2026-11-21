@@ -1,7 +1,9 @@
 import type { Locale } from "@/i18n/routing";
-import type { Activity, Content, GlyphId, I18n, Img, Project, RawContent, RawImage, RawProject, Settings } from "./types";
+import { GLYPHS, type Activity, type ActivityType, type Content, type GlyphId, type I18n, type Img, type Project, type RawContent, type RawImage, type RawProject, type Settings } from "./types";
 
-const GLYPHS: GlyphId[] = ["tbxxpert", "cv", "chat", "flower", "grid", "generic"];
+const isGlyph = (g?: string): g is GlyphId => GLYPHS.includes(g as GlyphId);
+/** Activities without their own glyph get one by type. */
+const TYPE_GLYPH: Record<ActivityType, GlyphId> = { education: "grid", organization: "chat", competition: "trophy", certification: "cv", event: "pulse" };
 
 /** Field in the visitor's language, English when the Indonesian translation is still empty. */
 export function pick<T>(value: I18n<T> | undefined, locale: Locale): T | undefined {
@@ -37,7 +39,6 @@ function resolveProject(p: RawProject, locale: Locale): Project {
       code: d.code?.code ? { language: d.code.language ?? "text", code: d.code.code } : undefined,
     }))
     .filter((d) => d.title || d.body);
-  const problem = nonEmpty(pick(p.problem, locale));
   return {
     slug: p.slug,
     title: p.title,
@@ -48,17 +49,16 @@ function resolveProject(p: RawProject, locale: Locale): Project {
     duration: p.duration,
     team: p.team,
     stack: p.stack ?? [],
-    glyph: p.glyph && GLYPHS.includes(p.glyph) ? p.glyph : "generic",
+    glyph: isGlyph(p.glyph) ? p.glyph : "generic",
     cover: resolveImage(p.cover, locale, p.title),
     galleryTile: p.galleryTile !== false,
     liveUrl: p.liveUrl,
     repoUrl: p.repoUrl,
-    problem,
+    problem: nonEmpty(pick(p.problem, locale)),
     process: nonEmpty(pick(p.process, locale)),
     results: nonEmpty(pick(p.results, locale)),
     decisions,
     gallery: (p.gallery ?? []).flatMap((g, i) => resolveImage(g, locale, `${p.title} ${i + 1}`) ?? []),
-    hasCase: Boolean(problem || decisions.length),
   };
 }
 
@@ -68,8 +68,6 @@ export function resolveContent(raw: RawContent, locale: Locale): Content {
     heroLabel: s.heroLabel || "LONG LIVE LEARNER",
     heroStatement: pick(s.heroStatement, locale) ?? "",
     manifesto: pick(s.manifesto, locale) ?? "",
-    facts: (s.facts ?? []).flatMap((f) => pick(f, locale) ?? []).slice(0, 5),
-    availability: s.showAvailability === false ? undefined : pick(s.availability, locale),
     email: s.email || undefined,
     linkedin: s.linkedin || undefined,
     github: s.github || undefined,
@@ -77,7 +75,9 @@ export function resolveContent(raw: RawContent, locale: Locale): Content {
     cvUrl: s.cvUrl || undefined,
   };
   const byOrder = <T extends { order?: number }>(a: T, b: T) => (a.order ?? 99) - (b.order ?? 99);
-  const activities: Activity[] = [...raw.activities].sort(byOrder).map((a) => {
+  // Newest first everywhere (index pages, Home, the related sequence); `order` only breaks ties.
+  const newest = <T extends { order?: number }>(key: (x: T) => string | undefined) => (a: T, b: T) => (key(b) ?? "").localeCompare(key(a) ?? "") || byOrder(a, b);
+  const activities: Activity[] = [...raw.activities].sort(newest((a) => a.startDate)).map((a) => {
     const body = nonEmpty(pick(a.body, locale));
     const cover = resolveImage(a.cover, locale, pick(a.title, locale) ?? a.slug);
     const gallery = (a.gallery ?? []).flatMap((g, i) => resolveImage(g, locale, `${pick(a.title, locale)} ${i + 1}`) ?? []);
@@ -95,11 +95,12 @@ export function resolveContent(raw: RawContent, locale: Locale): Content {
       url: a.url,
       featured: a.featured !== false,
       hasDetail: Boolean(body || cover || gallery.length),
+      glyph: isGlyph(a.glyph) ? a.glyph : TYPE_GLYPH[a.type ?? "event"],
     };
   });
   return {
     settings,
-    projects: [...raw.projects].sort(byOrder).map((p) => resolveProject(p, locale)),
+    projects: [...raw.projects].sort(newest((p) => p.year)).map((p) => resolveProject(p, locale)),
     activities,
     skills: [...raw.skills].sort(byOrder).map((g) => ({ title: pick(g.title, locale) ?? "", items: g.items ?? [] })),
   };
@@ -126,3 +127,16 @@ export function buildGalleryTiles(projects: Project[], slots = 7): Tile[] {
   }
   return tiles;
 }
+
+const isPortrait = (img: Img) => img.height > img.width;
+
+/** A portrait cover is paired with the next portrait image so both sit side by side instead of being cropped. */
+export function mediaSet(cover: Img | undefined, gallery: Img[] = []): Img[] {
+  if (!cover) return [];
+  if (!isPortrait(cover)) return [cover];
+  const pair = gallery.find((g) => isPortrait(g) && g.src !== cover.src);
+  return pair ? [cover, pair] : [cover];
+}
+
+/** Width/height of a row of images placed side by side at the same height. */
+export const rowRatio = (images: Img[]) => images.reduce((r, img) => r + img.width / img.height, 0);

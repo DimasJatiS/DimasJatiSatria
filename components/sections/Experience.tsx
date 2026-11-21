@@ -1,20 +1,20 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { Link } from "@/i18n/navigation";
 import type { Activity } from "@/lib/content/types";
 import { gsap, getTier, isMobile, SCRUB, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 
-type Props = { index: number; total: number; label: string; items: Activity[] };
+type Props = { label: string; items: Activity[] };
 
 /**
  * Timeline (max. 6) with the A2 climbing path: a dashed zig-zag through the row markers and one
  * bronze "climber" that follows the scroll (M-28). Straight line on mobile; M-17 line when still.
+ * Rows with a detail page are links as a whole; on fine pointers the cursor becomes a disc that
+ * inverts the colours under it.
  */
-export function Experience({ index, total, label, items }: Props) {
-  const t = useTranslations("activity");
+export function Experience({ label, items }: Props) {
   const ref = useRef<HTMLOListElement>(null);
   const [path, setPath] = useState<{ d: string; w: number; h: number } | null>(null);
   const [motionPath, setMotionPath] = useState(false);
@@ -88,10 +88,52 @@ export function Experience({ index, total, label, items }: Props) {
     { scope: ref, dependencies: [path?.d, motionPath] },
   );
 
+  // Inverting cursor disc: follows the pointer inside the list, grows over linked rows.
+  useGSAP(
+    () => {
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      const list = ref.current!;
+      const disc = list.querySelector<HTMLElement>("[data-disc]")!;
+      const d = getTier() === "still" ? 0.01 : 0.35;
+      gsap.set(disc, { xPercent: -50, yPercent: -50, scale: 0 });
+      const qx = gsap.quickTo(disc, "x", { duration: d, ease: "power3" });
+      const qy = gsap.quickTo(disc, "y", { duration: d, ease: "power3" });
+      let on = false;
+      const show = (next: boolean) => {
+        if (next === on) return;
+        on = next;
+        gsap.to(disc, { scale: next ? 1 : 0, duration: d, ease: "power3.out", overwrite: "auto" });
+      };
+      const move = (e: PointerEvent) => {
+        const r = list.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const hit = Boolean((e.target as Element).closest("[data-link]"));
+        // Entering a row: start at the pointer instead of flying in from the last spot.
+        if (hit && !on) {
+          qx(x, x);
+          qy(y, y);
+        } else {
+          qx(x);
+          qy(y);
+        }
+        show(hit);
+      };
+      const leave = () => show(false);
+      list.addEventListener("pointermove", move);
+      list.addEventListener("pointerleave", leave);
+      return () => {
+        list.removeEventListener("pointermove", move);
+        list.removeEventListener("pointerleave", leave);
+      };
+    },
+    { scope: ref },
+  );
+
   const period = (a: Activity) => [a.startYear, a.endYear && a.endYear !== a.startYear ? a.endYear : undefined].filter(Boolean).join(" — ");
 
   return (
-    <Section id="experience" tone="base" panel index={index} total={total} label={label}>
+    <Section id="experience" tone="base" panel label={label}>
       <ol ref={ref} className="container-x relative grid grid-cols-[40px_1fr] pt-12 pb-[clamp(96px,14vh,160px)] lg:grid-cols-12">
         <li aria-hidden data-path-col className="pointer-events-none absolute inset-y-0 left-[var(--gutter)] w-10 lg:left-[calc(var(--gutter)+(100%-2*var(--gutter))*2/12)] lg:w-[calc((100%-2*var(--gutter))/12)]">
           {path && (
@@ -101,6 +143,7 @@ export function Experience({ index, total, label, items }: Props) {
             </svg>
           )}
         </li>
+        <li aria-hidden data-disc className="pointer-events-none absolute top-0 left-0 z-10 hidden size-32 rounded-full bg-white mix-blend-difference [@media(hover:hover)_and_(pointer:fine)]:block" />
         {items.map((a) => {
           const title = (
             <>
@@ -109,20 +152,24 @@ export function Experience({ index, total, label, items }: Props) {
             </>
           );
           return (
-            <li key={a.slug} className="col-span-full grid grid-cols-subgrid border-t border-line py-8">
+            <li
+              key={a.slug}
+              data-link={a.hasDetail || undefined}
+              className="relative col-span-full grid grid-cols-subgrid border-t border-line py-8 data-[link]:[@media(hover:hover)_and_(pointer:fine)]:cursor-none"
+            >
               <p data-speed="1.1" className="label col-start-2 text-accent lg:col-span-2 lg:col-start-1">
                 {period(a)}
               </p>
               <span data-marker className="col-start-1 row-start-1 mt-1 size-2 justify-self-center rounded-full bg-fg lg:col-start-3 lg:row-start-auto" />
               <div className="col-start-2 lg:col-span-7 lg:col-start-4">
                 {a.hasDetail ? (
-                  <Link href={`/activities/${a.slug}`} className="group block hover:text-accent">
-                    {title} <span aria-hidden>→</span>
+                  // The link's ::before covers the whole row, so the row is one click target.
+                  <Link href={`/activities/${a.slug}`} className="block before:absolute before:inset-0 before:content-['']">
+                    {title}
                   </Link>
                 ) : (
                   title
                 )}
-                <p className="label mt-3 text-muted">{[t(`types.${a.type}`), a.org].filter(Boolean).join(" · ")}</p>
               </div>
             </li>
           );

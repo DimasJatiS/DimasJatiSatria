@@ -6,7 +6,29 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { gsap, getTier, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { LocaleToggle, ThemeToggle } from "./Toggles";
 
-const SECTIONS = ["work", "about", "contact"] as const;
+/** Work and Activities are pages; About and Contact stay sections of Home. */
+const NAV = [
+  { id: "work", page: "/work" },
+  { id: "activities", page: "/activities" },
+  { id: "about" },
+  { id: "contact" },
+] as const;
+
+function NavLink({ item, className, onClick, children }: { item: (typeof NAV)[number]; className?: string; onClick?: () => void; children: React.ReactNode }) {
+  const pathname = usePathname();
+  if (!("page" in item))
+    return (
+      <SectionLink id={item.id} className={className} onClick={onClick}>
+        {children}
+      </SectionLink>
+    );
+  const current = pathname === item.page || pathname.startsWith(`${item.page}/`);
+  return (
+    <Link href={item.page} className={className} onClick={onClick} aria-current={current ? "page" : undefined}>
+      {children}
+    </Link>
+  );
+}
 
 /** Anchor to a Home section: a plain hash on Home (Lenis handles it), a full link elsewhere. */
 function SectionLink({ id, className, onClick, children }: { id: string; className?: string; onClick?: () => void; children: React.ReactNode }) {
@@ -35,7 +57,7 @@ function SectionLink({ id, className, onClick, children }: { id: string; classNa
 }
 
 export function Monogram({ className = "" }: { className?: string }) {
-  return <span className={`font-display text-xl font-semibold tracking-[0.02em] ${className}`}>DJS</span>;
+  return <span className={`font-serif text-xl font-bold tracking-[-0.01em] ${className}`}>DJS</span>;
 }
 
 /**
@@ -51,7 +73,8 @@ export function Header({ cvUrl }: { cvUrl?: string }) {
   useGSAP(() => {
     ScrollTrigger.create({
       start: 80,
-      end: "max",
+      // Not "max": at the very bottom the trigger would count as finished and the pill would drop.
+      end: Number.MAX_SAFE_INTEGER,
       onToggle: (self) => ref.current?.toggleAttribute("data-condensed", self.isActive),
     });
   });
@@ -81,10 +104,10 @@ export function Header({ cvUrl }: { cvUrl?: string }) {
             <Monogram />
           </Link>
           <nav aria-label={t("primary")} className="label absolute left-1/2 hidden -translate-x-1/2 gap-8 lg:flex">
-            {SECTIONS.map((id) => (
-              <SectionLink key={id} id={id} className="link-underline py-1 text-muted hover:text-fg">
-                {t(id)}
-              </SectionLink>
+            {NAV.map((item) => (
+              <NavLink key={item.id} item={item} className="link-underline py-1 text-muted hover:text-fg aria-[current=page]:text-fg">
+                {t(item.id)}
+              </NavLink>
             ))}
           </nav>
           <div className="flex items-center gap-2 transition-transform duration-[400ms] ease-[var(--ease-out)] group-data-[condensed]/h:-translate-x-[var(--o)]">
@@ -121,12 +144,12 @@ export function Header({ cvUrl }: { cvUrl?: string }) {
             </button>
           </div>
           <nav aria-label={t("primary")} className="mt-16 flex flex-col gap-2">
-            {SECTIONS.map((id) => (
-              <SectionLink key={id} id={id} onClick={closeMenu} className="font-display text-[clamp(44px,13vw,88px)] leading-[1.05] font-normal">
+            {NAV.map((item) => (
+              <NavLink key={item.id} item={item} onClick={closeMenu} className="font-display text-[clamp(44px,13vw,88px)] leading-[1.05] font-bold aria-[current=page]:text-accent">
                 <span data-menu-item className="inline-block">
-                  {t(id)}
+                  {t(item.id)}
                 </span>
-              </SectionLink>
+              </NavLink>
             ))}
           </nav>
           <div data-menu-item className="mt-auto flex flex-wrap items-center gap-3">

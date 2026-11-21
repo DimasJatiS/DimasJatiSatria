@@ -6,9 +6,9 @@ import { Section } from "@/components/ui/Section";
 import { splitAccent } from "@/lib/content/text";
 import { gsap, getTier, SCRUB, useGSAP } from "@/lib/motion/gsap";
 
-type Props = { index: number; total: number; label: string; manifesto: string; facts: string[] };
+type Props = { label: string; manifesto: string };
 
-export function About({ index, total, label, manifesto, facts }: Props) {
+export function About({ label, manifesto }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -36,13 +36,13 @@ export function About({ index, total, label, manifesto, facts }: Props) {
   );
 
   return (
-    <Section id="about" tone="inverse" panel index={index} total={total} label={label} className="min-h-[100svh] overflow-hidden">
+    <Section id="about" tone="inverse" panel label={label} className="min-h-[100svh] overflow-hidden">
       <div aria-hidden data-speed="0.7" className="pointer-events-none absolute inset-x-0 -top-[10%] h-[120%]">
         <Contour className="size-full" />
       </div>
       <div ref={ref} className="container-x relative grid gap-12 pt-12 pb-[clamp(96px,14vh,160px)] lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-8">
-          <p data-manifesto className="display text-[clamp(32px,4.6vw,72px)] leading-[1.02] font-medium">
+          <p data-manifesto className="display text-[clamp(32px,4.6vw,72px)] leading-[1.02]">
             {words.map(({ w, accent }, i) =>
               /^\s+$/.test(w) ? (
                 w
@@ -53,20 +53,11 @@ export function About({ index, total, label, manifesto, facts }: Props) {
               ),
             )}
           </p>
-          {facts.length > 0 && (
-            <ul className="mt-10 flex flex-wrap gap-3">
-              {facts.map((f) => (
-                <li key={f} className="chip bg-surface">
-                  {f}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
         <div data-portrait data-speed="0.7" className="relative order-first aspect-[4/5] w-full max-w-[420px] lg:order-none lg:col-span-4 lg:justify-self-end">
           <div className="media relative size-full border border-line bg-surface">
             <div data-face className="absolute inset-0 grid place-items-center">
-              <span className="font-display text-[clamp(96px,14vw,200px)] leading-none font-semibold tracking-[-0.04em]">DJS</span>
+              <span className="font-serif text-[clamp(72px,8.4vw,136px)] leading-none font-bold tracking-[-0.02em]">DJS</span>
               <span className="label absolute bottom-4 left-4 text-muted">Dimas Jati Satria</span>
             </div>
             <div data-noise aria-hidden className="absolute inset-0 bg-[url(/grain.png)] bg-[length:144px] opacity-0 in-data-[motion=still]:hidden" />

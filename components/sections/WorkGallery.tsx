@@ -124,6 +124,7 @@ export function WorkGallery({ tiles }: { tiles: GalleryTile[] }) {
                   <Glyph
                     glyph={tile.glyph}
                     variant="halftone"
+                    animate
                     className="h-[55%] max-h-40"
                   />
                 </div>
@@ -140,7 +141,7 @@ export function WorkGallery({ tiles }: { tiles: GalleryTile[] }) {
             aria-hidden
             className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent pt-32 pb-8 opacity-0 in-data-[motion=still]:hidden"
           >
-            <p className="display container-x text-[clamp(48px,9vw,160px)] font-normal text-[#f5f5f2]">
+            <p className="display container-x text-[clamp(48px,9vw,160px)] text-[#f5f5f2]">
               {centreTile.title}
             </p>
           </div>

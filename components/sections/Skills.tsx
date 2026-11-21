@@ -5,9 +5,9 @@ import { Section } from "@/components/ui/Section";
 import type { SkillGroup } from "@/lib/content/types";
 import { gsap, getTier, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 
-type Props = { index: number; total: number; label: string; groups: SkillGroup[] };
+type Props = { label: string; groups: SkillGroup[] };
 
-export function Skills({ index, total, label, groups }: Props) {
+export function Skills({ label, groups }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   // M-16: 40 px/s, × (1 + |velocity| / 1000), direction follows the scroll; rows run opposite ways.
@@ -42,27 +42,19 @@ export function Skills({ index, total, label, groups }: Props) {
   const lines = [words.slice(0, half), words.slice(half)];
 
   return (
-    <Section id="skills" tone="inverse" panel index={index} total={total} label={label} className="overflow-hidden">
+    <Section id="skills" tone="inverse" panel label={label} className="overflow-hidden">
       <div ref={ref}>
-        <div className="container-x grid gap-x-16 gap-y-10 pt-12 pb-[clamp(64px,10vh,120px)] lg:grid-cols-2">
-          {groups.map((g) => (
-            <div key={g.title} className="border-t border-line pt-5">
-              <h3 className="label font-medium">{g.title}</h3>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {g.items.map((s) => (
-                  <li key={s} className="chip">
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        {/* The marquee is decorative; screen readers get the plain list. */}
+        <ul className="sr-only">
+          {words.map((w) => (
+            <li key={w}>{w}</li>
           ))}
-        </div>
-        <div aria-hidden className="flex flex-col gap-2 pb-[clamp(96px,14vh,160px)] text-muted">
+        </ul>
+        <div aria-hidden className="flex flex-col gap-2 pt-12 pb-[clamp(96px,14vh,160px)] text-muted">
           {lines.map((line, i) => (
             <div key={i} data-marquee className="flex w-max whitespace-nowrap">
               {[0, 1].map((copy) => (
-                <span key={copy} className="display pr-[0.4em] text-[clamp(48px,7.5vw,120px)] font-normal">
+                <span key={copy} className="display pr-[0.4em] text-[clamp(48px,7.5vw,120px)]">
                   {line.map((w) => `${w} · `).join("")}
                 </span>
               ))}

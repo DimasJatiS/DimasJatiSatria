@@ -2,7 +2,8 @@ import type { PortableTextBlock } from "next-sanity";
 
 /** Raw shapes = what GROQ returns (and what the seed mirrors). Field names follow Spek §5. */
 export type I18n<T = string> = { en?: T; id?: T };
-export type GlyphId = "tbxxpert" | "cv" | "chat" | "flower" | "grid" | "generic";
+export const GLYPHS = ["tbxxpert", "cv", "chat", "flower", "grid", "shard", "chain", "trophy", "stopwatch", "pulse", "generic"] as const;
+export type GlyphId = (typeof GLYPHS)[number];
 export type ActivityType = "education" | "organization" | "competition" | "certification" | "event";
 
 export type RawImage = {
@@ -18,9 +19,6 @@ export type RawSettings = {
   heroLabel?: string;
   heroStatement?: I18n;
   manifesto?: I18n;
-  facts?: I18n[];
-  availability?: I18n;
-  showAvailability?: boolean;
   email?: string;
   linkedin?: string;
   github?: string;
@@ -67,6 +65,7 @@ export type RawActivity = {
   url?: string;
   featured?: boolean;
   order?: number;
+  glyph?: GlyphId;
 };
 
 export type RawSkillGroup = { title: I18n; items?: string[]; order?: number };
@@ -85,8 +84,6 @@ export type Settings = {
   heroLabel: string;
   heroStatement: string;
   manifesto: string;
-  facts: string[];
-  availability?: string;
   email?: string;
   linkedin?: string;
   github?: string;
@@ -116,8 +113,6 @@ export type Project = {
   results?: PortableTextBlock[];
   decisions: Decision[];
   gallery: Img[];
-  /** Only projects with case-study text get a /work/[slug] page (design doc §5.3). */
-  hasCase: boolean;
 };
 
 export type Activity = {
@@ -134,6 +129,7 @@ export type Activity = {
   url?: string;
   featured: boolean;
   hasDetail: boolean;
+  glyph: GlyphId;
 };
 
 export type SkillGroup = { title: string; items: string[] };

@@ -8,7 +8,6 @@ import { Link } from "@/i18n/navigation";
 import type { Project } from "@/lib/content/types";
 import { gsap, getTier, isMobile, SCRUB, useGSAP } from "@/lib/motion/gsap";
 
-const pad = (n: number) => String(n).padStart(2, "0");
 
 function ExternalLinks({ project }: { project: Project }) {
   const t = useTranslations("work");
@@ -56,10 +55,7 @@ export function FeaturedCards({ projects }: { projects: Project[] }) {
         <li key={p.slug} className="sm:sticky" style={{ top: `calc(var(--header-h) + 16px + ${i * 18}px)` }}>
           <article data-card className="relative mx-auto will-change-transform max-w-[1180px] rounded-[24px] border border-line bg-surface p-5 sm:p-10">
             <header className="flex items-end gap-5">
-              <span className="label pb-2 text-accent">
-                {pad(i + 1)} / {pad(projects.length)}
-              </span>
-              <h3 className="font-display text-[clamp(36px,5.4vw,80px)] leading-none font-normal tracking-[-0.03em]">{p.title}</h3>
+              <h3 className="font-display text-[clamp(36px,5.4vw,80px)] leading-none font-bold tracking-[-0.03em]">{p.title}</h3>
               <Glyph glyph={p.glyph} animate className="ml-auto hidden size-16 shrink-0 text-muted sm:block" />
             </header>
             {p.cover && (
@@ -74,11 +70,9 @@ export function FeaturedCards({ projects }: { projects: Project[] }) {
             <p className="mt-6 max-w-[60ch] text-muted">{p.summary}</p>
             <p className="label mt-4 text-muted">{[p.role, p.year, p.stack.join(" · ")].filter(Boolean).join("  ·  ")}</p>
             <div className="label mt-6 flex flex-wrap gap-6">
-              {p.hasCase && (
-                <Link href={`/work/${p.slug}`} className="link-underline text-fg">
-                  {t("readCase")} →
-                </Link>
-              )}
+              <Link href={`/work/${p.slug}`} className="link-underline text-fg">
+                {t("readCase")} →
+              </Link>
               <ExternalLinks project={p} />
             </div>
           </article>
@@ -127,24 +121,20 @@ export function OtherWork({ projects }: { projects: Project[] }) {
         {projects.map((p) => {
           const row = (
             <>
-              <span className="font-display text-[clamp(32px,4.4vw,64px)] leading-tight font-normal tracking-[-0.02em]">{p.title}</span>
+              <span className="font-display text-[clamp(32px,4.4vw,64px)] leading-tight font-bold tracking-[-0.02em]">{p.title}</span>
               <span className="hidden max-w-[36ch] text-sm text-muted lg:block">{p.summary}</span>
               <span className="label ml-auto flex items-center gap-4 text-muted">
                 {p.year}
-                {p.hasCase && <span aria-hidden>→</span>}
+                <span aria-hidden>→</span>
               </span>
             </>
           );
           const cls = "flex items-center gap-8 border-b border-line py-6 sm:py-8";
           return (
             <li key={p.slug} onPointerEnter={(e) => onEnter(p, e)} onPointerLeave={onLeave}>
-              {p.hasCase ? (
-                <Link href={`/work/${p.slug}`} className={`${cls} hover:text-accent`}>
-                  {row}
-                </Link>
-              ) : (
-                <div className={cls}>{row}</div>
-              )}
+              <Link href={`/work/${p.slug}`} className={`${cls} hover:text-accent`}>
+                {row}
+              </Link>
             </li>
           );
         })}

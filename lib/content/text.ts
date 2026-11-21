@@ -1,6 +1,6 @@
 export type Segment = { text: string; accent: boolean };
 
-/** Splits "turning curiosity into *crafted* products" into plain and accent (Instrument Serif) parts. */
+/** Splits "turning curiosity into *crafted* products" into plain and accent (Corben) parts. */
 export function splitAccent(text: string): Segment[] {
   return text
     .split(/(\*[^*]+\*)/)

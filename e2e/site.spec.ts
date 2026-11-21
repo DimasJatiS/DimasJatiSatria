@@ -39,6 +39,28 @@ test("language toggle keeps the page", async ({ page, isMobile }) => {
   await expect(page).toHaveURL(/\/id$/);
 });
 
+test("work and activities have index pages, and a case study offers related work", async ({ page }) => {
+  await page.goto("/work?motion=still");
+  const first = page.locator('main a[href*="/work/"]').first();
+  const href = await first.getAttribute("href");
+  await first.click();
+  // The first visit to a case study can be slow under parallel load (on-demand render).
+  await expect(page).toHaveURL(new RegExp(`${href}$`), { timeout: 15_000 });
+  const related = page.locator("[data-card]");
+  await expect(related.first()).toBeAttached();
+  // Clicking another card selects it instead of navigating; the centre card opens it.
+  // The neighbour is only partly inside the clipped strip, so click it without scrolling.
+  const slug = await page.locator('li:has([data-card][aria-pressed="true"]) + li [data-card]').getAttribute("data-card");
+  const other = page.locator(`[data-card="${slug}"]`);
+  await other.dispatchEvent("click");
+  await expect(other).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(new RegExp(`${href}$`));
+
+  await page.goto("/id/activities?motion=still");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator('main a[href*="/activities/"]').first()).toBeAttached();
+});
+
 test("unknown pages return the localized 404", async ({ page }) => {
   const res = await page.goto("/id/does-not-exist?motion=still");
   expect(res?.status()).toBe(404);

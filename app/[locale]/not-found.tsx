@@ -16,7 +16,7 @@ export default async function NotFound() {
       </div>
       <div className="container-x relative text-center">
         <p className="label text-accent">404</p>
-        <h1 className="display mt-4 text-[clamp(48px,9vw,140px)] font-light">{t("title")}</h1>
+        <h1 className="display mt-4 text-[clamp(48px,9vw,140px)]">{t("title")}</h1>
         <p className="mt-4 text-muted">{t("body")}</p>
         <Link href="/" className="pill pill-accent mt-8">
           {t("back")}

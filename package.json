@@ -9,9 +9,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "predev": "node scripts/fetch-fonts.mjs",
     "dev": "next dev -p 3010",
-    "prebuild": "node scripts/fetch-fonts.mjs",
     "build": "next build",
     "start": "next start -p 3010",
     "lint": "eslint .",

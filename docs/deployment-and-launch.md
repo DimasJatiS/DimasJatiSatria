@@ -31,6 +31,14 @@ Form hanya tampil bila kelima kunci form ada. Nilai yang salah format dicatat di
 | Lighthouse (desktop, lokal) | Accessibility 100, Best Practices 100, SEO 92 (canonical menunjuk domain produksi, wajar di localhost) |
 | Performance | Lihat `motion.md`; skor Lighthouse Performance belum diukur (CLI tidak diizinkan diunduh di sesi build) |
 | JS awal | 235 KB gzip / 204 KB brotli. **Melewati budget 180 KB**: baseline React 19 + Next 16 ≈ 145 KB, GSAP + plugin ≈ 60 KB, Lenis 10 KB, next-intl 12 KB. three.js (243 KB gzip) dimuat lazy setelah load, hanya di `full` |
-| Font | Clash Display 29 KB + Geist/Geist Mono/Instrument Serif via `next/font` |
+| Font | Manrope + Corben via `next/font` (Google Fonts) |
 | iOS Safari / Android nyata | Belum; jalankan di preview Vercel |
 | Konten | Kanal kontak, CV, aktivitas, isi case study menunggu Sanity |
+
+## Deploy sementara (19 Nov 2026)
+
+- **Live:** https://dimasjati.vercel.app, project Vercel `dimasjati`, deploy lewat CLI (`vercel deploy --prod`). `vercel.json` menetapkan framework Next.js (project yang dibuat lewat CLI terdeteksi "Other"). `.vercelignore` mengecualikan `.env*`, `/projects/`, `/activities/` (dikunci ke root; tanpa `/` pola itu ikut membuang `app/[locale]/activities`) dan dokumen perencanaan.
+- **Env production** (9 variabel) diisi dari `.env.local`; `NEXT_PUBLIC_SITE_URL=https://dimasjati.vercel.app`.
+- **Sanity:** konten awal diimpor dengan `studio/scripts/import-seed.ts` (menimpa dokumen dengan id yang sama; jangan dijalankan ulang setelah konten diedit di Studio). Webhook "Revalidate portfolio" dibuat dengan `studio/scripts/create-webhook.ts`; endpoint menolak permintaan tanpa tanda tangan (401).
+- **Resend:** tanpa domain terverifikasi, Resend hanya mengirim dari `onboarding@resend.dev` ke email pemilik akun (UGM). `CONTACT_FROM_EMAIL`/`CONTACT_TO_EMAIL` diset ke situ; setelah punya domain sendiri, verifikasi di Resend lalu ganti keduanya (mis. ke Gmail).
+- **Belum:** uji kirim form oleh manusia di browser (Turnstile meminta centang di browser otomatis), koneksi Git → auto-deploy (akun Vercel belum terhubung ke GitHub), domain/CV.

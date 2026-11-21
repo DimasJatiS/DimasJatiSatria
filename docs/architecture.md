@@ -22,10 +22,10 @@ next-intl 4 dengan `localePrefix: "as-needed"`: `/` = EN, `/id` = ID, tanpa dete
 
 | Peran | Font | Kelas |
 | --- | --- | --- |
-| Display | Clash Display (variabel 200–700, diunduh saat build) | `.display` |
-| Aksen satu kata | Instrument Serif italic, `--accent` | `.accent-word` (`*kata*` di teks Sanity) |
-| Body | Geist | default |
-| Label | Geist Mono 12px kapital | `.label` |
+| Judul (display) | Manrope 700, tracking rapat | `.display`, `font-display` |
+| Aksen satu kata + monogram DJS | Corben 700, `--accent` (hanya selingan) | `.accent-word` (`*kata*` di teks Sanity), `font-serif` |
+| Body, label, kode | Manrope (tanpa mono, tanpa bobot light) | default |
+| Label | Manrope 14px medium, huruf biasa | `.label` |
 
 Grid: container 1440px, gutter `clamp(16px, 4vw, 64px)`, garis grid hairline 4 kolom per section (A5). Sudut: media 12px, panel 24px (atas), tombol pill. Grain global: tile PNG 72px 8 KB, opacity 5%/4%, tanpa blend mode.
 
@@ -34,7 +34,7 @@ Grid: container 1440px, gutter `clamp(16px, 4vw, 64px)`, garis grid hairline 4 k
 | Rute / section | Komponen | Sumber data | Catatan |
 | --- | --- | --- | --- |
 | 01 Hero | `sections/Hero.tsx` | `siteSettings` | 7 kolom lembah (5 di mobile), shader/AVIF, track sticky |
-| 02 About | `sections/About.tsx` | `manifesto`, `facts` | Panel terang, kontur A1, siluet DJS (Q1) |
+| 02 About | `sections/About.tsx` | `manifesto` | Panel terang, kontur A1, siluet DJS (Q1) |
 | 03 Work | `WorkGallery.tsx`, `WorkProjects.tsx` | `project` | Gallery 7 tile (5 mobile) dari data, kartu unggulan, Other work |
 | 04 Skills | `sections/Skills.tsx` | `skillGroup` | Grid 2×2 + 2 marquee |
 | 05 Experience | `sections/Experience.tsx` | `activity` (featured, maks. 6) | Disembunyikan bila kosong |

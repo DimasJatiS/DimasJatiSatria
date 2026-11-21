@@ -6,13 +6,10 @@ import { Sunrise } from "@/components/artwork/Sunrise";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Section } from "@/components/ui/Section";
-import { TextPressure } from "@/components/ui/TextPressure";
 import type { Settings } from "@/lib/content/types";
 import { gsap, getTier, SCRUB, useGSAP } from "@/lib/motion/gsap";
 
 type Props = {
-  index: number;
-  total: number;
   label: string;
   panel: boolean;
   settings: Settings;
@@ -20,7 +17,7 @@ type Props = {
   form: { mode: "live"; siteKey: string } | { mode: "note" | "hidden" };
 };
 
-export function Contact({ index, total, label, panel, settings, form }: Props) {
+export function Contact({ label, panel, settings, form }: Props) {
   const t = useTranslations("contact");
   const a11y = useTranslations("a11y");
   const ref = useRef<HTMLDivElement>(null);
@@ -85,14 +82,12 @@ export function Contact({ index, total, label, panel, settings, form }: Props) {
       id="contact"
       tone="base"
       panel={panel}
-      index={index}
-      total={total}
       label={label}
     >
       <div ref={ref} className="track track-sun">
         <div className="sticky-frame container-x flex flex-col pt-10">
-          <h3 className="display text-[clamp(56px,11vw,184px)] leading-[0.9] font-normal">
-            <TextPressure text={t("title").toUpperCase()} />
+          <h3 className="display text-[clamp(56px,11vw,184px)] leading-[0.9]">
+            <span className="block">{t("title")}</span>
             <span className="block">
               <span className="accent-word">{t("titleAccent")}</span>.
             </span>
@@ -149,12 +144,6 @@ export function Contact({ index, total, label, panel, settings, form }: Props) {
             >
               CV ↓
             </a>
-          )}
-          {settings.availability && (
-            <p className="label flex items-center gap-2 text-accent">
-              <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-              {settings.availability}
-            </p>
           )}
         </div>
       </div>

@@ -12,7 +12,7 @@ Requires Node 24 (`.nvmrc`) and pnpm 12.
 ```bash
 nvm use 24
 pnpm install
-pnpm dev            # http://localhost:3010 (downloads the Clash Display font on first run)
+pnpm dev            # http://localhost:3010
 ```
 
 No environment variables are needed: without Sanity the site renders from the local seed in `lib/content/seed.ts`, and the contact form stays hidden in production. See `.env.example` for every option.
@@ -52,11 +52,11 @@ docs/                how it is built (architecture, motion, content, deployment)
 
 ## Content
 
-Projects, activities, skills and site settings (hero text, manifesto, facts, email, LinkedIn, GitHub, CV) live in Sanity; every translatable field is `{ en, id }` and falls back to English. A project becomes a `/work/[slug]` case study as soon as it has a problem or a key decision; an activity gets a detail page when it has a body or images. Publishing in Sanity revalidates the site through the webhook at `/api/revalidate`. Details: [`docs/content-and-sanity.md`](docs/content-and-sanity.md).
+Projects, activities, skills and site settings (hero text, manifesto, email, LinkedIn, GitHub, CV) live in Sanity; every translatable field is `{ en, id }` and falls back to English. A project becomes a `/work/[slug]` case study as soon as it has a problem or a key decision; an activity gets a detail page when it has a body or images. Publishing in Sanity revalidates the site through the webhook at `/api/revalidate`. Details: [`docs/content-and-sanity.md`](docs/content-and-sanity.md).
 
 ## Fonts
 
-Clash Display (Indian Type Foundry, ITF Free Font License) is downloaded from Fontshare by `scripts/fetch-fonts.mjs` before `dev`/`build` and is not committed. Geist, Geist Mono and Instrument Serif come from Google Fonts via `next/font`.
+Fonts: Manrope for headings and body text, Corben only as an accent (accent words, DJS monogram), both from Google Fonts via `next/font`.
 
 ## Deploy
 

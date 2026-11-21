@@ -5,7 +5,7 @@ const image = `{ "url": asset->url, "width": asset->metadata.dimensions.width, "
 /** One query for the whole site: content is small, and one cache tag keeps revalidation simple. */
 export const contentQuery = defineQuery(`{
   "settings": *[_type == "siteSettings"][0]{
-    heroLabel, heroStatement, manifesto, facts, availability, showAvailability,
+    heroLabel, heroStatement, manifesto,
     email, linkedin, github, repoUrl, "cvUrl": cv.asset->url
   },
   "projects": *[_type == "project" && defined(slug.current)] | order(order asc){
@@ -14,7 +14,7 @@ export const contentQuery = defineQuery(`{
     "cover": cover${image}, "gallery": gallery[]${image}
   },
   "activities": *[_type == "activity" && defined(slug.current)] | order(order asc){
-    title, "slug": slug.current, org, type, startDate, endDate, summary, body, url, featured, order,
+    title, "slug": slug.current, org, type, startDate, endDate, summary, body, url, featured, order, glyph,
     "cover": cover${image}, "gallery": gallery[]${image}
   },
   "skills": *[_type == "skillGroup"] | order(order asc){ title, items, order }

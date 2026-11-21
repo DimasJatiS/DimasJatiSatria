@@ -127,5 +127,30 @@
         "height": 886
       }
     ]
+  },
+  "shardfall": {
+    "cover": {
+      "src": "/projects/shardfall/cover.jpg",
+      "color": "/projects/shardfall/cover-color.jpg",
+      "width": 1562,
+      "height": 1600
+    },
+    "gallery": [
+      {
+        "src": "/projects/shardfall/gallery-1.jpg",
+        "width": 576,
+        "height": 253
+      },
+      {
+        "src": "/projects/shardfall/gallery-2.jpg",
+        "width": 576,
+        "height": 285
+      },
+      {
+        "src": "/projects/shardfall/gallery-3.jpg",
+        "width": 576,
+        "height": 284
+      }
+    ]
   }
 }
